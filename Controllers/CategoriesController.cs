@@ -24,14 +24,14 @@ namespace cappuccino.shifttracker.Controllers
         }
 
         [HttpGet()] 
-        public ActionResult<IEnumerable<CategoryDto>> GetCategories([FromQuery] string letter, string searchQuery)
+        public ActionResult<IEnumerable<CategoryDto>> GetCategories([FromQuery] CategoriesResourceParameters categoriesResourceParameters)
         {
             //throw new Exception("TestException");
-            var categoriesFromRepo = _categoryRepository.GetCategories(letter, searchQuery);
+            var categoriesFromRepo = _categoryRepository.GetCategories(categoriesResourceParameters);
             return Ok(_mapper.Map<IEnumerable<CategoryDto>>(categoriesFromRepo));
         }
 
-        [HttpGet("{categoryId}")] 
+        [HttpGet("{categoryId}", Name = "GetAuthor")] 
         public IActionResult GetCategory(int categoryId)
         {
             var categoryFromRepo = _categoryRepository.GetCategory(categoryId);
@@ -42,6 +42,19 @@ namespace cappuccino.shifttracker.Controllers
             }
 
             return Ok(categoryFromRepo);
+        }
+
+        [HttpPost]
+        public ActionResult<CategoryDto> CreateCategory(CategoryForCreationDto category)
+        {
+            var categoryEntity = _mapper.Map<Entities.Category>(category);
+            _categoryRepository.AddCategory(categoryEntity);
+            _categoryRepository.Save();
+
+            var categoryToReturn = _mapper.Map<CategoryDto>(categoryEntity);
+            return CreatedAtRoute("GetAuthor",
+               new { categoryId = categoryToReturn.Id }, 
+               categoryToReturn);
         }
     }
 }

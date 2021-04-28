@@ -7,6 +7,7 @@ namespace cappuccino.shifttracker.Profiles
         public CategoriesProfile()
         {
             CreateMap<Entities.Category, Models.CategoryDto>();
+            CreateMap<Models.CategoryForCreationDto, Entities.Category>();
         }
         
     }

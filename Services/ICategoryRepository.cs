@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using cappuccino.shifttracker.Controllers;
 using cappuccino.shifttracker.Entities;
 
 namespace Cappuccino.Shifttracker.Services
@@ -14,13 +15,13 @@ namespace Cappuccino.Shifttracker.Services
     //     void UpdateShift(Shift shift);
     //     void DeleteShift(Shift shift);
         IEnumerable<Category> GetCategories();
-        IEnumerable<Category> GetCategories(string letter, string searchQuery);
+        IEnumerable<Category> GetCategories(CategoriesResourceParameters categoriesResourceParameters);
         Category GetCategory(int categoryId);
     //     IEnumerable<Category> GetCategorys(IEnumerable<int> categoryIds);
-    //     void AddCategory(Category category);
+        void AddCategory(Category category);
     //     void DeleteCategory(Category category);
     //     void UpdateCategory(Category category);
         bool CategoryExists(int categoryId);
-    //     bool Save();
+        bool Save();
     }
 }

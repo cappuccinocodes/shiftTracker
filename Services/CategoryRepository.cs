@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using API.DbContexts;
+using cappuccino.shifttracker.Controllers;
 using cappuccino.shifttracker.Entities;
 using Cappuccino.Shifttracker.Services;
 
@@ -77,23 +78,23 @@ namespace Cappuccino.Shifttracker.Services
     //         // no code in this implementation
     //     }
 
-    //     public void AddCategory(Author author)
-    //     {
-    //         if (author == null)
-    //         {
-    //             throw new ArgumentNullException(nameof(author));
-    //         }
+        public void AddCategory(Category category)
+        {
+            if (category == null)
+            {
+                throw new ArgumentNullException(nameof(category));
+            }
 
-    //         // the repository fills the id (instead of using identity columns)
-    //         author.Id = int.Newint();
+            // the repository fills the id (instead of using identity columns)
+            // category.Id = int.Newint();
 
-    //         foreach (var Shift in author.Shifts)
-    //         {
-    //             Shift.Id = int.Newint();
-    //         }
+            // foreach (var Shift in category.Shifts)
+            // {
+            //     Shift.Id = int.Newint();
+            // }
 
-    //         _context.Categories.Add(author);
-    //     }
+            _context.Categories.Add(category);
+        }
 
         public bool CategoryExists(int categoryId)
         {
@@ -105,14 +106,14 @@ namespace Cappuccino.Shifttracker.Services
             return _context.Categories.Any(a => a.Id == categoryId);
         }
 
-    //     public void DeleteCategory(Author author)
+    //     public void DeleteCategory(Author category)
     //     {
     //         if (author == null)
     //         {
-    //             throw new ArgumentNullException(nameof(author));
+    //             throw new ArgumentNullException(nameof(category));
     //         }
 
-    //         _context.Categories.Remove(author);
+    //         _context.Categories.Remove(category);
     //     }
         
         public Category GetCategory(int categoryId)
@@ -125,24 +126,30 @@ namespace Cappuccino.Shifttracker.Services
             return _context.Categories.ToList<Category>();
         }
 
-        public IEnumerable<Category> GetCategories(string letter, string searchQuery)
+        public IEnumerable<Category> GetCategories(CategoriesResourceParameters categoriesResourceParameters)
         {
-            if(string.IsNullOrWhiteSpace(letter)
-            && string.IsNullOrWhiteSpace(searchQuery))
+            if (categoriesResourceParameters == null )
+            {
+                throw new ArgumentNullException(nameof(categoriesResourceParameters));
+            }
+
+            if(string.IsNullOrWhiteSpace(categoriesResourceParameters.Letter)
+            && string.IsNullOrWhiteSpace(categoriesResourceParameters.SearchQuery))
             {
                 return GetCategories();
             }
 
             var collection = _context.Categories as IQueryable<Category>; 
 
-             if(!string.IsNullOrWhiteSpace(letter))
+             if(!string.IsNullOrWhiteSpace(categoriesResourceParameters.Letter))
             {
+                var letter = categoriesResourceParameters.Letter.Trim();
                 collection  = collection.Where(c => c.Name.Contains(letter)); 
             }
 
-             if(!string.IsNullOrWhiteSpace(searchQuery))
+             if(!string.IsNullOrWhiteSpace(categoriesResourceParameters.SearchQuery))
             {
-                searchQuery = searchQuery.Trim();
+                var searchQuery = categoriesResourceParameters.SearchQuery.Trim();
                 collection = collection.Where(c => c.Name.Contains(searchQuery)
                      //|| c.AnyOtherProperty.Contains(searchquery) <<< SUPER INTERESTING
 );
@@ -164,15 +171,15 @@ namespace Cappuccino.Shifttracker.Services
     //             .ToList();
     //     }
 
-    //     public void UpdateCategory(Author author)
+    //     public void UpdateCategory(Author category)
     //     {
     //         // no code in this implementation
     //     }
 
-    //     public bool Save()
-    //     {
-    //         return (_context.SaveChanges() >= 0);
-    //     }
+        public bool Save()
+        {
+            return (_context.SaveChanges() >= 0);
+        }
 
         public void Dispose()
         {
